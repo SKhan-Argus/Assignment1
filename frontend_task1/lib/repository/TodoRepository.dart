@@ -3,6 +3,11 @@ import 'dart:convert';
 import 'package:frontend_task1/models/todo.dart';
 import 'package:http/http.dart' as http;
 
+
+// was calling api using http
+// not being used currently
+
+
 class TodoRepository {
   Future<List<Todo>> getAll() async {
     const url = 'https://jsonplaceholder.typicode.com/todos';
