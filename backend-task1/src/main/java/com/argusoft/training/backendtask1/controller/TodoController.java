@@ -56,6 +56,4 @@ public class TodoController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
 }

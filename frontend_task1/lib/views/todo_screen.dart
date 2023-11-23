@@ -15,19 +15,15 @@ class TodoScreen extends StatefulWidget {
 class _TodoScreenState extends State<TodoScreen> {
   @override
   void initState() {
-
     super.initState();
-    int userId = context.read<TodoCubit>().userId;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final cubit = context.read<TodoCubit>();
-      cubit.fetchTodo(userId);
+      cubit.fetchTodo();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

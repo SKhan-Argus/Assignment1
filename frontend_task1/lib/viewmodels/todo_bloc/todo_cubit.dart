@@ -8,11 +8,10 @@ class TodoCubit extends Cubit<TodoState> {
 
 
   TodoCubit(super.initialState, this.userId);
-  int userId;
+  final int userId;
 
-  Future<void> fetchTodo(int userId) async {
+  Future<void> fetchTodo() async {
     emit(LoadingTodoState());
-    this.userId = userId;
     final client = ApiClient(
       Dio(
         BaseOptions(contentType: "application/json"),
@@ -20,48 +19,45 @@ class TodoCubit extends Cubit<TodoState> {
     );
 
     try {
-      final response = await client.getTodo(this.userId);
+      final response = await client.getTodo(userId);
       emit(ResponseTodoState(response));
     } catch (e) {
       emit(ErrorTodoState(e.toString()));
     }
   }
 
-  Future<void> addTodo(String title_add, String description_add) async {
+  Future<void> addTodo(String titleAdd, String descriptionAdd) async {
     final apiClient = ApiClient(Dio());
     try {
-      final response = await apiClient.addTodo(
+      await apiClient.addTodo(
           3,
           TodoAdd(
-            title: title_add,
-            description: description_add,
+            title: titleAdd,
+            description: descriptionAdd,
           ));
-      print('Todo added: ${response.id}');
-      fetchTodo(this.userId);
+      fetchTodo();
     } catch (e) {
-      print('Failed to add todo: $e');
+      emit(ErrorTodoState("Failed to add todo."));
     }
   }
 
   Future<void> updateTodo(int id) async {
     final apiClient = ApiClient(Dio());
     try {
-      final response = await apiClient.updateTodo(id);
-      print("Todo updated $id");
-      fetchTodo(this.userId);
+      await apiClient.updateTodo(id);
+      fetchTodo();
     } catch (e) {
-      print('Failed to update todo : $e');
+      emit(ErrorTodoState("Failed to update todo."));
     }
   }
 
   Future<void> deleteTodo(int id) async {
     final apiClient = ApiClient(Dio());
     try {
-      final response = await apiClient.deleteTodo(id);
-      print("Todo deleted $id");
-      fetchTodo(this.userId);
+      await apiClient.deleteTodo(id);
+      fetchTodo();
     } catch (e) {
-      print('Failed to delete todo : $e');
+      emit(ErrorTodoState("Failed to delete todo."));
     }
   }
 }
