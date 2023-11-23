@@ -13,8 +13,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int userId =3;
     return BlocProvider(
-      create: (context) => TodoCubit(InitTodoState()),
+      create: (context) => TodoCubit(InitTodoState(), userId),
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: TodoScreen(),

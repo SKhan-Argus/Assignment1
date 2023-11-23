@@ -6,10 +6,13 @@ import 'package:frontend_task1/models/todo_add.dart';
 
 class TodoCubit extends Cubit<TodoState> {
 
-  TodoCubit(super.initialState);
-  Future<void> fetchTodo() async {
-    emit(LoadingTodoState());
 
+  TodoCubit(super.initialState, this.userId);
+  int userId;
+
+  Future<void> fetchTodo(int userId) async {
+    emit(LoadingTodoState());
+    this.userId = userId;
     final client = ApiClient(
       Dio(
         BaseOptions(contentType: "application/json"),
@@ -17,7 +20,7 @@ class TodoCubit extends Cubit<TodoState> {
     );
 
     try {
-      final response = await client.getTodo(3);
+      final response = await client.getTodo(this.userId);
       emit(ResponseTodoState(response));
     } catch (e) {
       emit(ErrorTodoState(e.toString()));
@@ -25,47 +28,40 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> addTodo(String title_add, String description_add) async {
-    final title = title_add;
-    final description = description_add;
-
     final apiClient = ApiClient(Dio());
     try {
-      final response = await apiClient.addTodo(3,TodoAdd(
-        title: title,
-        description: description,
-      ));
+      final response = await apiClient.addTodo(
+          3,
+          TodoAdd(
+            title: title_add,
+            description: description_add,
+          ));
       print('Todo added: ${response.id}');
-      fetchTodo();
+      fetchTodo(this.userId);
     } catch (e) {
       print('Failed to add todo: $e');
     }
   }
 
-
-  Future<void> updateTodo(int id)async {
+  Future<void> updateTodo(int id) async {
     final apiClient = ApiClient(Dio());
-    try{
+    try {
       final response = await apiClient.updateTodo(id);
-      print("todo updated $id");
-      fetchTodo();
+      print("Todo updated $id");
+      fetchTodo(this.userId);
     } catch (e) {
       print('Failed to update todo : $e');
     }
   }
 
-
-  Future<void> deleteTodo(int id)async {
+  Future<void> deleteTodo(int id) async {
     final apiClient = ApiClient(Dio());
-    try{
+    try {
       final response = await apiClient.deleteTodo(id);
-      print("todo deleted $id");
-      fetchTodo();
+      print("Todo deleted $id");
+      fetchTodo(this.userId);
     } catch (e) {
       print('Failed to delete todo : $e');
     }
   }
-
-
-
-
 }

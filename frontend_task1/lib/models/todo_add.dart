@@ -8,9 +8,6 @@ class TodoAdd {
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'description': description
-    };
+    return {'title': title, 'description': description};
   }
 }

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_cubit.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_state.dart';
 import 'package:frontend_task1/views/add_dialog_box.dart';
-
 import 'delete_dialog_box.dart';
 
 class TodoScreen extends StatefulWidget {
@@ -14,23 +13,28 @@ class TodoScreen extends StatefulWidget {
 }
 
 class _TodoScreenState extends State<TodoScreen> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
   @override
   void initState() {
+
     super.initState();
+    int userId = context.read<TodoCubit>().userId;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final cubit = context.read<TodoCubit>();
-      cubit.fetchTodo();
+      cubit.fetchTodo(userId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Todo List", style: TextStyle(color: Colors.white),),
+        title: Text(
+          "Todo List",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.black26,
       ),
       body: BlocBuilder<TodoCubit, TodoState>(
@@ -63,8 +67,7 @@ class _TodoScreenState extends State<TodoScreen> {
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                         decoration: todo.completed
-                            ? TextDecoration
-                                .lineThrough
+                            ? TextDecoration.lineThrough
                             : TextDecoration.none,
                       ),
                     ),
@@ -72,13 +75,15 @@ class _TodoScreenState extends State<TodoScreen> {
                       todo.description,
                       style: TextStyle(
                         fontSize: 14,
-                        decoration: todo.completed ? TextDecoration.lineThrough : TextDecoration.none,
+                        decoration: todo.completed
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
                       ),
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () {
-                        _showDeleteTodoDialog(context, todo.id);
+                        showDeleteTodoDialog(context, todo.id);
                       },
                     ),
                   ),
@@ -94,20 +99,20 @@ class _TodoScreenState extends State<TodoScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTodoDialog(context),
+        onPressed: () => showAddTodoDialog(context),
         child: Icon(Icons.add),
       ),
     );
   }
 
-  void _showAddTodoDialog(BuildContext context) {
+  void showAddTodoDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AddDialogBox(),
     );
   }
 
-  void _showDeleteTodoDialog(BuildContext context, int id) {
+  void showDeleteTodoDialog(BuildContext context, int id) {
     showDialog(
       context: context,
       builder: (context) => DeleteDialogBox(
