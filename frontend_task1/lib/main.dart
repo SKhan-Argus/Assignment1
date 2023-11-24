@@ -1,7 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_task1/repository/api_service.dart';
+import 'package:frontend_task1/repository/auth_repository.dart';
+import 'package:frontend_task1/repository/todo_repository.dart';
+import 'package:frontend_task1/viewmodels/auth_bloc/auth_cubit.dart';
+import 'package:frontend_task1/viewmodels/auth_bloc/auth_state.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_cubit.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_state.dart';
+import 'package:frontend_task1/views/add_todo_screen.dart';
+import 'package:frontend_task1/views/login_screen.dart';
+import 'package:frontend_task1/views/register_screen.dart';
 import 'package:frontend_task1/views/todo_screen.dart';
 
 void main() {
@@ -13,12 +22,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int userId =3;
-    return BlocProvider(
-      create: (context) => TodoCubit(InitTodoState(), userId),
-      child: const MaterialApp(
+    return MultiBlocProvider(
+      // create: (context) => TodoCubit(InitTodoState(), userId, TodoRepository(ApiClient(Dio()))),
+      providers: [
+        BlocProvider<TodoCubit>(
+          create: (context) {
+            return TodoCubit(
+                InitTodoState(), TodoRepository(ApiClient(Dio())));
+          },
+        ),
+        BlocProvider<AuthCubit>(
+            create: (context) =>
+                AuthCubit(InitAuthState(), AuthRepository(ApiClient(Dio())))),
+      ],
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: TodoScreen(),
+        initialRoute: '/login',
+        routes: {
+          '/login': (context) => LoginScreen(),
+          '/register': (context) => RegisterScreen(),
+          '/todo': (context) => const TodoScreen(),
+          '/add': (context) => const AddTodoScreen(),
+        },
       ),
     );
   }

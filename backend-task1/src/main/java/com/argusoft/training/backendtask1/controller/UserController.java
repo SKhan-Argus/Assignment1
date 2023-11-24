@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin
 public class UserController {
 
     private final UserService userService;
@@ -31,10 +32,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(signupResponse);
         }
 
+        user.setId(null);
         userService.addUser(user);
         signupResponse.setMessage("User added successfully");
         signupResponse.setSuccess(true);
-        return ResponseEntity.ok(signupResponse);
+        return ResponseEntity.ok(user);
     }
 
 
@@ -50,7 +52,7 @@ public class UserController {
                 loginResponse.setMessage("Login Successfully");
                 //loginResponse.setToken(token);
                 loginResponse.setUser(user);
-                return ResponseEntity.ok(loginResponse);
+                return ResponseEntity.ok(user);
             }
         }
 

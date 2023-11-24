@@ -15,3 +15,5 @@ class ResponseTodoState extends TodoState {
   final List<Todo> todos;
   ResponseTodoState(this.todos);
 }
+
+class LogoutTodoState extends TodoState {}

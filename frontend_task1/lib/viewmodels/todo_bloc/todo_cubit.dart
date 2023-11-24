@@ -1,25 +1,22 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_task1/viewmodels/auth_bloc/auth_cubit.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_state.dart';
-import 'package:frontend_task1/repository/api_service.dart';
-import 'package:frontend_task1/models/todo_add.dart';
+import 'package:frontend_task1/repository/todo_repository.dart';
 
 class TodoCubit extends Cubit<TodoState> {
+  final TodoRepository todoRepository;
+  int userId = 0;
+  TodoCubit(super.initialState, this.todoRepository);
 
+  void setUserId(int userId){
+    this.userId = userId;
+  }
 
-  TodoCubit(super.initialState, this.userId);
-  final int userId;
 
   Future<void> fetchTodo() async {
     emit(LoadingTodoState());
-    final client = ApiClient(
-      Dio(
-        BaseOptions(contentType: "application/json"),
-      ),
-    );
-
     try {
-      final response = await client.getTodo(userId);
+      final response = await todoRepository.fetchTodo(userId);
       emit(ResponseTodoState(response));
     } catch (e) {
       emit(ErrorTodoState(e.toString()));
@@ -27,14 +24,8 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> addTodo(String titleAdd, String descriptionAdd) async {
-    final apiClient = ApiClient(Dio());
     try {
-      await apiClient.addTodo(
-          3,
-          TodoAdd(
-            title: titleAdd,
-            description: descriptionAdd,
-          ));
+      await todoRepository.addTodo(titleAdd, descriptionAdd, userId);
       fetchTodo();
     } catch (e) {
       emit(ErrorTodoState("Failed to add todo."));
@@ -42,9 +33,8 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> updateTodo(int id) async {
-    final apiClient = ApiClient(Dio());
     try {
-      await apiClient.updateTodo(id);
+      await todoRepository.updateTodo(id);
       fetchTodo();
     } catch (e) {
       emit(ErrorTodoState("Failed to update todo."));
@@ -52,12 +42,15 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> deleteTodo(int id) async {
-    final apiClient = ApiClient(Dio());
     try {
-      await apiClient.deleteTodo(id);
+      await todoRepository.deleteTodo(id);
       fetchTodo();
     } catch (e) {
       emit(ErrorTodoState("Failed to delete todo."));
     }
+  }
+
+  void logout(){
+    emit(LogoutTodoState());
   }
 }

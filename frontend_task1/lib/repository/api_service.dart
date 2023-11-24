@@ -1,4 +1,6 @@
+import 'package:frontend_task1/models/login_detail.dart';
 import 'package:frontend_task1/models/todo_add.dart';
+import 'package:frontend_task1/models/user.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 import 'package:frontend_task1/models/todo.dart';
@@ -20,4 +22,14 @@ abstract class ApiClient {
 
   @PUT('/todos/{id}/toggle')
   Future<void> updateTodo(@Path('id') int todoId);
+
+  @POST('/users/login')
+  Future<User> login(@Body() LoginDetail loginDetail);
+
+  @GET('users/demo/1')
+  Future<User> getData();
+
+  @POST('/users/signup')
+  Future<User> register(@Body() User user);
+
 }

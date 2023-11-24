@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_task1/viewmodels/auth_bloc/auth_cubit.dart';
+import 'package:frontend_task1/viewmodels/auth_bloc/auth_state.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_cubit.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_state.dart';
-import 'package:frontend_task1/views/add_dialog_box.dart';
+import 'package:frontend_task1/views/my_appbar.dart';
 import 'delete_dialog_box.dart';
 
 class TodoScreen extends StatefulWidget {
@@ -17,7 +19,10 @@ class _TodoScreenState extends State<TodoScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final authState = context.read<AuthCubit>().state;
+      final userId = (authState is AuthenticatedState) ? authState.user.id : null;
       final cubit = context.read<TodoCubit>();
+      cubit.setUserId(userId!=null?userId:0);
       cubit.fetchTodo();
     });
   }
@@ -25,30 +30,29 @@ class _TodoScreenState extends State<TodoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "Todo List",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.black26,
-      ),
+      appBar: const MyAppbar(),
       body: BlocBuilder<TodoCubit, TodoState>(
         builder: (context, state) {
           if (state is InitTodoState || state is LoadingTodoState) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is ResponseTodoState) {
+          } else if(state is LogoutTodoState){
+            Future.microtask(() {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+          }
+          else if (state is ResponseTodoState) {
             final todos = state.todos;
             return ListView.builder(
-              padding: EdgeInsets.only(bottom: 80),
+              padding: const EdgeInsets.only(bottom: 80),
               itemCount: todos.length,
               itemBuilder: (context, index) {
                 final todo = todos[index];
                 return Card(
                   elevation: 4,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
                     leading: Checkbox(
                       value: todo.completed,
@@ -77,7 +81,7 @@ class _TodoScreenState extends State<TodoScreen> {
                       ),
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: () {
                         showDeleteTodoDialog(context, todo.id);
                       },
@@ -95,18 +99,22 @@ class _TodoScreenState extends State<TodoScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showAddTodoDialog(context),
-        child: Icon(Icons.add),
+        onPressed: () {
+          final cubit = context.read<TodoCubit>();
+          Navigator.pushNamed(
+            context,
+            '/add',
+            arguments:
+                cubit.userId, // Replace myData with the data you want to pass
+          );
+          // showAddTodoDialog(context, cubit.userId);
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  void showAddTodoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AddDialogBox(),
-    );
-  }
+
 
   void showDeleteTodoDialog(BuildContext context, int id) {
     showDialog(
