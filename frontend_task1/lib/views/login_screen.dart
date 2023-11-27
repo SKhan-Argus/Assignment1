@@ -111,11 +111,7 @@ class LoginScreen extends StatelessWidget {
                                       ),
                                       GestureDetector(
                                           onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        RegisterScreen()));
+                                           Navigator.pushNamed(context, '/register');
                                           },
                                           child: const Text(
                                             'Register now',

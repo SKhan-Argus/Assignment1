@@ -2,12 +2,13 @@ import 'package:bloc/bloc.dart';
 import 'package:frontend_task1/models/login_detail.dart';
 import 'package:frontend_task1/models/user.dart';
 import 'package:frontend_task1/repository/auth_repository.dart';
+import 'package:get_it/get_it.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final AuthRepository authRepository;
+  final AuthRepository authRepository = GetIt.instance<AuthRepository>();
 
-  AuthCubit(super.initialState, this.authRepository);
+  AuthCubit(super.initialState,);
 
   Future<void> login(String username, String password) async {
     emit(LoadingAuthState());

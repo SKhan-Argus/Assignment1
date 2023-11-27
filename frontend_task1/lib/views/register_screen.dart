@@ -31,16 +31,6 @@ class RegisterScreen extends StatelessWidget {
                     height: 50.0,
                   ),
 
-                  // --logo
-                  // Icon(
-                  //   Icons.power_settings_new,
-                  //   size: 100,
-                  //   color: Colors.grey.shade800,
-                  // ),
-                  //
-                  // const SizedBox(
-                  //   height: 50.0,
-                  // ),
 
                   //create account msg
                   const Text(
@@ -134,32 +124,6 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       )),
 
-
-                  // BlocBuilder<RegisterCubit, RegisterState>(
-                  //   builder: (context, state) {
-                  //     if (state is UserRegisteredSuccess) {
-                  //       // Handle successful registration, e.g., navigate to another page
-                  //       return Text('Registration successful!');
-                  //     } else if (state is UserRegistrationError) {
-                  //       // Handle registration error
-                  //       return Text('Registration failed: ${state.error}');
-                  //     } else {
-                  //       // Default UI, e.g., show a button to register
-                  //       return ElevatedButton(
-                  //         onPressed: () {
-                  //           context.read<RegisterCubit>().CreateUser(
-                  //                 usernameController.text,
-                  //                 firstnameController.text,
-                  //                 lastnameController.text,
-                  //                 emailController.text,
-                  //                 passwordController.text,
-                  //               );
-                  //         },
-                  //         child: Text('Register'),
-                  //       );
-                  //     }
-                  //   },
-                  // ),
 
                   const SizedBox(
                     height: 30.0,

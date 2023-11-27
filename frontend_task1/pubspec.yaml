@@ -37,6 +37,7 @@ dependencies:
   retrofit:
   json_annotation:
   dio:
+  get_it:
 
 
 

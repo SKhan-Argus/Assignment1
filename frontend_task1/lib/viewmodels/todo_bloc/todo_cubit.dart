@@ -2,11 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_task1/viewmodels/auth_bloc/auth_cubit.dart';
 import 'package:frontend_task1/viewmodels/todo_bloc/todo_state.dart';
 import 'package:frontend_task1/repository/todo_repository.dart';
+import 'package:get_it/get_it.dart';
 
 class TodoCubit extends Cubit<TodoState> {
-  final TodoRepository todoRepository;
+  final TodoRepository todoRepository = GetIt.instance<TodoRepository>();
   int userId = 0;
-  TodoCubit(super.initialState, this.todoRepository);
+  TodoCubit(super.initialState,);
 
   void setUserId(int userId){
     this.userId = userId;
